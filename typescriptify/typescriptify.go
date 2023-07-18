@@ -556,7 +556,13 @@ func (t *TypeScriptify) convertType(depth int, typeOf reflect.Type, customCode m
 
 	t.alreadyConverted[typeOf] = true
 
-	entityName := t.Prefix + typeOf.Name() + t.Suffix
+	var entityName string
+	if typeOf.Kind() == reflect.Ptr {
+		entityName = t.Prefix + typeOf.Elem().Name() + t.Suffix
+	} else {
+		entityName = t.Prefix + typeOf.Name() + t.Suffix
+	}
+
 	result := ""
 	if t.CreateInterface {
 		result += fmt.Sprintf("interface %s {\n", entityName)
